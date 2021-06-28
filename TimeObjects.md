@@ -1,7 +1,7 @@
 ## Abstract
 
-This SRFI is meant to replace SRFI 174, Timestamps, by adding
-more flexible time representations than just UTC.  It is a small subset
+This SRFI is meant to replace SRFI 174, Timestamps, by providing for
+other time representations than just UTC.  It is a small subset
 of SRFI 19, Time Datatypes and Procedures.
 
 ## Specification
@@ -13,6 +13,21 @@ procedures with the same names.
 Their [SRFI 174](https://srfi.schemers.org/srfi-174/srfi-174.html)
 equivalents appear in small type below (FIXME: not yet)
 and are deprecated.
+
+Time objects are treated by the procedures of this SRFI as immutable;
+if they are the same as SRFI 19 time objects (which is recommended
+if an implementation provides both), then using SRFI 19
+mutators to alter them is an error.
+
+An *instant* is an exact
+or inexact rational number representing
+a particular second or fraction of a second
+of the TAI scale, such that 0 represents midnight on January 1, 1970 TAI
+(equivalent to approximately 8 seconds before midnight Universal Time)
+and the value 1 represents one TAI second later.
+The current instant can be obtained more or less accurately
+by invoking the R7RS-small procedure `current-second`,
+which always returns an inexact number.
 
 ## Constants
 
@@ -38,22 +53,22 @@ Symbol representing time spent in current process.
 Symbol representing time spent in current thread.
 
 
-
 ## Time object and accessors
 
 `make-time` *type nanosecond second -> time*  
 `timespec ` *nanosecond second*
 
 Creates a time object.
+The `timespec` version sets the type to `time-utc`.
 
 `time?` *object -> boolean*  
 `timespec?` *object -> boolean*
 
-#t if object is a time object, otherwise, #f.
+`#t` if object is a time object, otherwise `#f`
 
 `time-type` *time -> time-type*
 
-Time type.
+Time type as a symbol.
 
 `time-nanosecond` *time -> exact-integer*  
 `timespec-nanoseconds` *time -> exact-integer*
@@ -88,11 +103,11 @@ The semantics for time objects of type `time-duration` are given in parentheses.
 
 `time<=?` *time1 time2 -> boolean*  
 
-#t if time1 is before or at (less than or equal to) time2, #f otherwise.
+`#t` if time1 is before or at (less than or equal to) time2, `#f` otherwise.
 
 `time>=?` *time1 time2 -> boolean*  
 
-#t if time1 is at or after (greater than or equal to) time2, #f otherwise.
+`#t` if time1 is at or after (greater than or equal to) time2, `#f` otherwise.
 
 ## Time arithmetic procedures
 
@@ -114,16 +129,16 @@ The result has the same type as *time*.
 
 ## Conversion
 
-`time->inexact` *time*
-`timespec->inexact` *time*
+`time->instant` *time*
+`timespec->instant` *time*
 
-Number of seconds since the epoch as an inexact real number.
+Converts a UTC or TAI time object to the equivalent instant.
 
-`inexact->time` *type inexact*
-`inexact->timespec` *type inexact*
+`instant->time` *type inexact*
+`instant->timespec` *type inexact*
 
-A time with given type with specified number of seconds from the epoch.
-   
+Converts an instant to the equivalent TAI or UTC time object.
+
 `time-utc->tai` *time* [*leap-second*]
 
 Returns a time object of type `time-utc` to an equivalent time object
@@ -136,7 +151,7 @@ See discussion of TAI below.
 `time-tai->utc` *time*
 
 Converts a time object of type `time-tai` to an equivalent time object
-of type `time-utc`,
+of type `time-utc`.
 
 ## Hash and comparator
 
@@ -175,6 +190,7 @@ just before the Posix epoch.  The implementation also pretends,
 To update the leap second tables, download
 [`leap-seconds.list`](https://www.ietf.org/timezones/data/leap-seconds.list)
 for IANA's version of such a table, which is maintained.
+
 For exact leap second data before 1972, see the old USNO file
 [`tai-utc.dat`](http://web.archive.org/web/20191022082231/http://maia.usno.navy.mil/ser7/tai-utc.dat).
 This file is *not* being updated, and should be used only if the
