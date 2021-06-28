@@ -129,12 +129,12 @@ The result has the same type as *time*.
 
 ## Conversion
 
-`time->instant` *time*
+`time->instant` *time*  
 `timespec->instant` *time*
 
 Converts a UTC or TAI time object to the equivalent instant.
 
-`instant->time` *type inexact*
+`instant->time` *type inexact*  
 `instant->timespec` *type inexact*
 
 Converts an instant to the equivalent TAI or UTC time object.
