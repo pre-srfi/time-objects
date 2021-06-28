@@ -1,10 +1,18 @@
 ## Abstract
 
+This SRFI is meant to replace SRFI 174, Timestamps, by adding
+more flexible time representations than just UTC.  It is a small subset
+of SRFI 19, Time Datatypes and Procedures.
+
+## Specification
+
 These procedures, except for those in the section **Conversions**,
 have the same semantics as the
 [SRFI 19](https://srfi.schemers.org/srfi-19/srfi-19.html)
 procedures with the same names.
-Their SRFI 174 equivalents are shown.
+Their [SRFI 174](https://srfi.schemers.org/srfi-174/srfi-174.html)
+equivalents appear in small type below (FIXME: not yet)
+and are deprecated.
 
 ## Constants
 
@@ -17,6 +25,9 @@ Symbol representing UTC time.
 `time-tai`  
 Symbol representing TAI time.
 
+`time-duration`  
+Symbol representing a duration.
+
 `time-monotonic`  
 Symbol representing monotonic time.
 
@@ -26,35 +37,33 @@ Symbol representing time spent in current process.
 `time-thread`  
 Symbol representing time spent in current thread.
 
-`time-duration`  
-Symbol representing a duration.
+
 
 ## Time object and accessors
 
-`make-time` *type nanosecond second -> time*
+`make-time` *type nanosecond second -> time*  
+`timespec ` *nanosecond second*
 
 Creates a time object.
-[[SRFI 174](https://srfi.schemergs.org/srfi-174/srfi-174.html) `timespec`]
 
-`time?` *object -> boolean*
+`time?` *object -> boolean*  
+`timespec?` *object -> boolean*
 
 #t if object is a time object, otherwise, #f.
-[[SRFI 174](https://srfi.schemergs.org/srfi-174/srfi-174.html) `timespec?`]
 
 `time-type` *time -> time-type*
 
 Time type.
-[No SRFI 174 equivalent]
 
-`time-nanosecond` *time -> integer*
+`time-nanosecond` *time -> exact-integer*  
+`timespec-nanoseconds` *time -> exact-integer*
 
 Time nanosecond.
-[[SRFI 174](https://srfi.schemergs.org/srfi-174/srfi-174.html) `timespec-nanoseconds`]
 
-`time-second` *time -> integer*
+`time-second` *time -> exact-integer*  
+`timespec-seconds` *time ->exact-integers*
 
 Time second.
-[[SRFI 174](https://srfi.schemergs.org/srfi-174/srfi-174.html) `timespec-seconds`]
 
 ## Time comparison procedures
 
@@ -63,31 +72,27 @@ It is an error to use these procedures on time objects of different types.
 
 The semantics for time objects of type `time-duration` are given in parentheses.
 
-`time=?` *time1 time2 -> boolean*
+`time=?` *time1 time2 -> boolean*  
+`timespec=?` *time1 time2 -> boolean*
 
-#t if time1 is equal to time2, #f otherwise.
-[[SRFI 174](https://srfi.schemergs.org/srfi-174/srfi-174.html) `timespec=?`]
+`#t` if time1 is equal to time2, `#f` otherwise.
 
-`time<?` *time1 time2 -> boolean*
+`time<?` *time1 time2 -> boolean*  
+`timespec<?` *time1 time2 -> boolean*
 
-#t if time1 is before (less than) time2, #f otherwise.
-[[SRFI 174](https://srfi.schemergs.org/srfi-174/srfi-174.html) `timespec<?`]
+`#t` if time1 is before (less than) time2, `#f` otherwise.
 
-`time>?` *time1 time2 -> boolean*
+`time>?` *time1 time2 -> boolean*  
 
-#t if time1 is after (greater than) time2, #f otherwise.
-[No SRFI 174 equivalent]
+`#t` if time1 is after (greater than) time2, `#f` otherwise.
 
-`time<=?` *time1 time2 -> boolean*
+`time<=?` *time1 time2 -> boolean*  
 
 #t if time1 is before or at (less than or equal to) time2, #f otherwise.
-[No SRFI 174 equivalent]
 
-`time>=?` *time1 time2 -> boolean*
+`time>=?` *time1 time2 -> boolean*  
 
 #t if time1 is at or after (greater than or equal to) time2, #f otherwise.
-[No SRFI 174 equivalent]
-
 
 ## Time arithmetic procedures
 
@@ -96,32 +101,29 @@ The semantics for time objects of type `time-duration` are given in parentheses.
 Returns a time object of type `time-duration` representing the time between
 between *time1* and *time2*.
 It is an error if time1 and time2 are of different time types. A new time object is created.
-[No SRFI 174 equivalent]
 
 `add-duration` *time1 time-duration -> time*
 
 Returns the time resulting from adding *time-duratio*n to *time*.
 The result has the same type as *time*.
-[No SRFI 174 equivalent]
 
 `subtract-duration` *time1 time-duration -> time*
 
 Returns the time resulting from subtracting *time-duratio*n from *time*.
 The result has the same type as *time*.
-[No SRFI 174 equivalent]
 
 ## Conversion
 
 `time->inexact` *time*
+`timespec->inexact` *time*
 
 Number of seconds since the epoch as an inexact real number.
-[[SRFI 174](https://srfi.schemergs.org/srfi-174/srfi-174.html) `timespec->inexact`]
 
 `inexact->time` *type inexact*
+`inexact->timespec` *type inexact*
 
 A time with given type with specified number of seconds from the epoch.
-[[SRFI 174](https://srfi.schemergs.org/srfi-174/srfi-174.html) `ineact->timespec`]
-
+   
 `time-utc->tai` *time* [*leap-second*]
 
 Returns a time object of type `time-utc` to an equivalent time object
@@ -129,26 +131,24 @@ of type `time-tai`.  If the `time-utc` object is equivalent
 to two different `time-tai` objects, one of which is a leap second and
 the other of which is not, the boolean argument *leap-second* shows
 which TAI second is returned.
-[No SRFI 174 equivalent]
+See discussion of TAI below.
 
 `time-tai->utc` *time*
 
 Converts a time object of type `time-tai` to an equivalent time object
-of type `time-utc`.
-[No SRFI 174 equivalent]
+of type `time-utc`,
 
 ## Hash and comparator
 
 `time-hash` *time*
+`timespec-hash` *time*
 
 Returns an exact integer hash code for *time*.
-[[SRFI 174](https://srfi.schemergs.org/srfi-174/srfi-174.html) `timespec-hash`]
 
 `time-comparator`  
 
 A SRFI 128 comparator for two times of the same type
 based on `time?, time=?, time<', time-hash`.
-[No SRFI 174 equivalent]
 
 ## Implementation
 
