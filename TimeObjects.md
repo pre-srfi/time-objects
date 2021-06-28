@@ -29,36 +29,18 @@ The current instant can be obtained more or less accurately
 by invoking the R7RS-small procedure `current-second`,
 which always returns an inexact number.
 
-## Time type symbols
-
-No SRFI 174 equivalents, because SRFI 174 provides only timespecs
-of type `time-utc`.
-
-`time-utc`  
-Symbol representing UTC time.
-
-`time-tai`  
-Symbol representing TAI time.
-
-`time-duration`  
-Symbol representing a duration.
-
-`time-monotonic`  
-Symbol representing monotonic time.
-
-`time-process`  
-Symbol representing time spent in current process.
-
-`time-thread`  
-Symbol representing time spent in current thread.
-
-
 ## Time object and accessors
 
 `make-time` *type nanosecond second -> time*  
 `timespec ` *nanosecond second*
 
-Creates a time object.
+Returns a time object.  It is an error unless
+the *type* is one of the symbols
+`time-utc`, `time-tai`, `time-duration`,
+`time-monotonic`, `time-process`, or `time-thread`.
+The last two represent time spent in the current
+process or thread.
+
 The `timespec` version sets the type to `time-utc`.
 
 `time?` *object -> boolean*  
