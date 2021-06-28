@@ -29,7 +29,7 @@ The current instant can be obtained more or less accurately
 by invoking the R7RS-small procedure `current-second`,
 which always returns an inexact number.
 
-## Constants
+## Time type symbols
 
 No SRFI 174 equivalents, because SRFI 174 provides only timespecs
 of type `time-utc`.
