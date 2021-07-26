@@ -38,8 +38,11 @@ Returns a time object.  It is an error unless
 the *type* is one of the symbols
 `time-utc`, `time-tai`, `time-duration`,
 `time-monotonic`, `time-process`, or `time-thread`.
-The last two represent time spent in the current
-process or thread.
+Only the first three are supported by this SRFI.
+
+The epoch for `time-utc` objects is the Posix
+epoch, 1970-01-01T00:00:00Z.
+The epoch for `time-tai` objects is 8 seconds earlier.
 
 The `timespec` version sets the type to `time-utc`.
 
@@ -97,17 +100,17 @@ The semantics for time objects of type `time-duration` are given in parentheses.
 
 Returns a time object of type `time-duration` representing the time between
 between *time1* and *time2*.
-It is an error if time1 and time2 are of different time types. A new time object is created.
+It is an error unless time1 and time2 are both TAI and UTC.
 
-`add-duration` *time1 time-duration -> time*
+`add-duration` *time time-duration -> time*
 
-Returns the time resulting from adding *time-duratio*n to *time*.
-The result has the same type as *time*.
+Returns the time object resulting from adding *time-duratio*n to *time*.
+The result has the same type as *time*, which must be TAI or UTC.
 
-`subtract-duration` *time1 time-duration -> time*
+`subtract-duration` *time time-duration -> time*
 
-Returns the time resulting from subtracting *time-duratio*n from *time*.
-The result has the same type as *time*.
+Returns the time resulting from subtracting *time-duration* from *time*.
+The result has the same type as *time*, which must be TAI or UTC.
 
 ## Conversion
 
@@ -128,7 +131,7 @@ of type `time-tai`.  If the `time-utc` object is equivalent
 to two different `time-tai` objects, one of which is a leap second and
 the other of which is not, the boolean argument *leap-second* shows
 which TAI second is returned.
-See discussion of TAI below.
+See discussion of leap seconds below.
 
 `time-tai->utc` *time*
 
