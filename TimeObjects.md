@@ -99,11 +99,11 @@ Returns `#t` if time1 is at or after (greater than or equal to) time2, `#f` othe
 
 Returns a time object of type `time-duration` representing the time
 between *time1* and *time2*.
-It is an error unless time1 and time2 are both TAI and UTC.
+It is an error unless *time1* and *time2* are both TAI or both UTC.
 
 `add-duration` *time time-duration -> time*  [No SRFI 174 equivalent]
 
-Returns the time object resulting from adding *time-duratio*n to *time*.
+Returns the time object resulting from adding *time-duration* to *time*.
 The result has the same type as *time*, which must be TAI or UTC.
 
 `subtract-duration` *time time-duration -> time*  [No SRFI 174 equivalent]
