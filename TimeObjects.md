@@ -2,11 +2,11 @@
 
 This SRFI is meant to replace SRFI 174, Timestamps, by providing for
 other time representations than just UTC.  It is a small subset
-of SRFI 19, Time Datatypes and Procedures.
+of SRFI 19, Time Datatypes and Procedures plus a few additional procedures.
 
 ## Specification
 
-These procedures, except for those in the section **Conversions**,
+These procedures, except as noted below,
 have the same semantics as the
 [SRFI 19](https://srfi.schemers.org/srfi-19/srfi-19.html)
 procedures with the same names.
@@ -19,15 +19,9 @@ if they are the same as SRFI 19 time objects (which is recommended
 if an implementation provides both), then using SRFI 19
 mutators to alter them is an error.
 
-An *instant* is an exact
-or inexact rational number representing
-a particular second or fraction of a second
-of the TAI scale, such that 0 represents midnight on January 1, 1970 TAI
-(equivalent to approximately 8 seconds before midnight Universal Time)
-and the value 1 represents one TAI second later.
-The current instant can be obtained more or less accurately
-by invoking the R7RS-small procedure `current-second`,
-which always returns an inexact number.
+It would be possible to implement
+[SRFI 18](https://srfi.schemers.org/srfi-18/srfi-18.html)
+time objects using the time objects provided by this SRFI.
 
 ## Time object and accessors
 
@@ -42,7 +36,12 @@ Only the first three are supported by this SRFI.
 
 The epoch for `time-utc` objects is the Posix
 epoch, 1970-01-01T00:00:00Z.
-The epoch for `time-tai` objects is 8 seconds earlier.
+The epoch for `time-tai` objects and for instances
+(which are inexact numbers) is 8 seconds earlier.
+The current UTC time can be obtained from the
+[SRFI 170](https://srfi.schemers.org/srfi-170/srfi-170.html)
+procedure `posix-time`; the current instant can be obtained
+from the R7RS-small procedure `current-second`.
 
 The `timespec` version sets the type to `time-utc`.
 
@@ -51,19 +50,19 @@ The `timespec` version sets the type to `time-utc`.
 
 `#t` if object is a time object, otherwise `#f`
 
-`time-type` *time -> time-type*
+`time-type` *time -> time-type*  [No SRFI 174 equivalent]
 
-Time type as a symbol.
+Returns the time type of *time* as a symbol.
 
 `time-nanosecond` *time -> exact-integer*  
 `timespec-nanoseconds` *time -> exact-integer*
 
-Time nanosecond.
+Returns the nanoseconds of *time* as an exact integer.
 
 `time-second` *time -> exact-integer*  
 `timespec-seconds` *time ->exact-integers*
 
-Time second.
+Returns the seconds of *time* as an exact integer.
 
 ## Time comparison procedures
 
@@ -75,80 +74,82 @@ The semantics for time objects of type `time-duration` are given in parentheses.
 `time=?` *time1 time2 -> boolean*  
 `timespec=?` *time1 time2 -> boolean*
 
-`#t` if time1 is equal to time2, `#f` otherwise.
+Returns `#t` if time1 is equal to time2, `#f` otherwise.
 
 `time<?` *time1 time2 -> boolean*  
 `timespec<?` *time1 time2 -> boolean*
 
-`#t` if time1 is before (less than) time2, `#f` otherwise.
+Returns `#t` if time1 is before (less than) time2, `#f` otherwise.
 
-`time>?` *time1 time2 -> boolean*  
+`time>?` *time1 time2 -> boolean*  [No SRFI 174 equivalent]
 
-`#t` if time1 is after (greater than) time2, `#f` otherwise.
+Returns `#t` if time1 is after (greater than) time2, `#f` otherwise.
 
-`time<=?` *time1 time2 -> boolean*  
+`time<=?` *time1 time2 -> boolean*  [No SRFI 174 equivalent]
 
-`#t` if time1 is before or at (less than or equal to) time2, `#f` otherwise.
+Returns `#t` if time1 is before or at (less than or equal to) time2, `#f` otherwise.
 
-`time>=?` *time1 time2 -> boolean*  
+`time>=?` *time1 time2 -> boolean*  [No SRFI 174 equivalent]
 
-`#t` if time1 is at or after (greater than or equal to) time2, `#f` otherwise.
+Returns `#t` if time1 is at or after (greater than or equal to) time2, `#f` otherwise.
 
 ## Time arithmetic procedures
 
-`time-difference` *time1 time2 -> time-duration*
+`time-difference` *time1 time2 -> time-duration*  [No SRFI 174 equivalent]
 
-Returns a time object of type `time-duration` representing the time between
+Returns a time object of type `time-duration` representing the time
 between *time1* and *time2*.
 It is an error unless time1 and time2 are both TAI and UTC.
 
-`add-duration` *time time-duration -> time*
+`add-duration` *time time-duration -> time*  [No SRFI 174 equivalent]
 
 Returns the time object resulting from adding *time-duratio*n to *time*.
 The result has the same type as *time*, which must be TAI or UTC.
 
-`subtract-duration` *time time-duration -> time*
+`subtract-duration` *time time-duration -> time*  [No SRFI 174 equivalent]
 
 Returns the time resulting from subtracting *time-duration* from *time*.
 The result has the same type as *time*, which must be TAI or UTC.
 
 ## Conversion
 
-`time->instant` *time*  
-`timespec->instant` *time*
+`time-utc->time-tai` *time* [*leap-second*]   [No SRFI 174 equivalent]
 
-Converts a UTC or TAI time object to the equivalent instant.
-
-`instant->time` *type inexact*  
-`instant->timespec` *type inexact*
-
-Converts an instant to the equivalent TAI or UTC time object.
-
-`time-utc->tai` *time* [*leap-second*]
-
-Returns a time object of type `time-utc` to an equivalent time object
+Returns a time object of type `time-tai` equivalent to a time object
 of type `time-tai`.  If the `time-utc` object is equivalent
 to two different `time-tai` objects, one of which is a leap second and
 the other of which is not, the boolean argument *leap-second* shows
 which TAI second is returned.
 See discussion of leap seconds below.
 
-`time-tai->utc` *time*
+`time-tai->time-utc` *time*  [No SRFI 174 equivalent]
 
-Converts a time object of type `time-tai` to an equivalent time object
+Converts a time object of type `time-utc` equivalentto a time object
 of type `time-utc`.
+
+`time->inexact` *time*  [No SRFI 19 equivalent] 
+`timespec->inexact` *time*
+
+Converts a UTC or TAI time object to the equivalent instant
+and returns it.
+
+`inexact->time` *type inexact*   [No SRFI 19 equivalent]  
+`inexact->timespec` *type inexact*
+
+Converts an instant to the equivalent UTC or TAI time object
+and returns it.
 
 ## Hash and comparator
 
-`time-hash` *time*
+`time-hash` *time*  [No SRFI 19 equivalent]
 `timespec-hash` *time*
 
 Returns an exact integer hash code for *time*.
 
-`time-comparator`  
+`time-comparator`    [No SRFI 19 or SRFI 174 equivalent]
 
 A SRFI 128 comparator for two times of the same type
-based on `time?, time=?, time<', time-hash`.
+based on `time?`, `time=?`, `time<`, and `time-hash`.
 
 ## Implementation
 
