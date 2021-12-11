@@ -81,7 +81,7 @@ time objects are distinct from the time objects provided by this SRFI.
 It would be possible to implement the former using the latter, but it
 would be unnecessarily heavyweight.
 
-## Time object and accessors
+## Time constructor, predicate, and accessors
 
 `time-utc`  
 `time-tai`  
@@ -176,12 +176,14 @@ It is an error unless *time1* and *time2* are both TAI or both UTC.
 `add-duration` *time time-duration -> time*  [No SRFI 174 equivalent]
 
 Returns the time object resulting from adding *time-duration* to *time*.
-The result has the same type as *time*, which must be TAI or UTC.
+The result has the same type as *time*.  It is an error unless
+*time* is TAI or UTC.
 
 `subtract-duration` *time time-duration -> time*  [No SRFI 174 equivalent]
 
 Returns the time resulting from subtracting *time-duration* from *time*.
-The result has the same type as *time*, which must be TAI or UTC.
+The result has the same type as *time*.  It is an error unless
+*time* is TAI or UTC.
 
 ## Conversion
 
@@ -232,7 +234,7 @@ time-object-error?` is signaled.
 `time-object-error?` *obj*
 
 Returns `#t` if *obj* is raised in any of the
-circumstances mentioned above, and `#f` otherwise.
+circumstances mentioned above or possibly in
 
 ## Implementation
 
@@ -247,7 +249,6 @@ For the messy period, the implementation pretends that there were leap seconds
 at the end of the following days (that is, at 23:59:60 proleptic UTC time):
 30 Jun 1959; 30 Jun 1961; 31 Dec 1963; 31 Dec 1964; 30 Jun 1966;
 30 Jun 1967; 30 Jun 1968; 30 Jun 1969; 30 Jun 1970.
-()
 This has the following desirable effects: the TAI-UTC offset is 0 in 1958
 (true by definition), at the Posix epoch it is 8
 (which is within a few milliseconds of the true value),
