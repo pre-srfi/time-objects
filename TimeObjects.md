@@ -36,8 +36,8 @@ Time objects are immutable objects that holds a symbol and two exact integers:
 
  * The *type* component — a symbol specifying the epoch as explained below.
  
- * The *seconds* component  If non-negative, the number of whole seconds
-   since a particular [epoch]().
+ * The *seconds* component — If non-negative, the number of whole seconds
+   since a particular epoch.
    If negative, the number of whole seconds
    to go back in time from the epoch. Normally excludes leap seconds
    (i.e. a leap second that occurs between the epoch and *seconds*
