@@ -61,7 +61,7 @@ Time objects are immutable objects that holds a symbol and two exact integers:
 In no case can this SRFI guarantee anything about the accuracy
 or precision of any time object sources. Since it is difficult to usefully
 determine and communicate precision and accuracy in most applications,
-time objects do not evenc ontain any standard field to hold such information.
+time objects do not even ontain any standard field to hold such information.
 
 These procedures, except as noted below,
 have the same semantics as the
