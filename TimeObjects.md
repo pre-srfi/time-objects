@@ -108,7 +108,7 @@ procedure `posix-time`; the current instant can be obtained
 from the R7RS-small procedure `current-second`.
 
 `make-time` *type nanosecond second -> time*  
-`timespec ` *nanosecond second*
+<small>`timespec ` *nanosecond second*</small>
 
 Returns a time object.  It is an error unless
 the *type* is one of the values of the exported variables
