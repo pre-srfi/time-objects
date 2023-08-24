@@ -215,6 +215,23 @@ and returns it.
 Converts an instant to the equivalent UTC or TAI time object
 and returns it.
 
+## Rata die
+
+`(timespec->rata-die `*timespec*`)`
+
+Returns two values.  The first value is
+the number of days between midnight January 1st 1 C.E. UTC
+and *timespec* (rounded down); the second is the number of nanoseconds
+in the day.
+It is an error if *time* is not of type `time-utc`.
+
+`(rata-die->timespec `*day nanosecond*`)`
+
+Returns a timespec of type `time-utc` equivalent to
+the number of days between midnight January 1st 1 C.E. UTC
+the number of nanoseconds in the day.
+It is an error if *time* is not of type `time-utc`.
+
 ## Time hash and comparator
 
 `time-hash` *time*  [No SRFI 19 equivalent]  
@@ -227,7 +244,7 @@ Returns an exact integer hash code for *time*.
 A SRFI 128 comparator for two times of the same type
 based on `time?`, `time=?`, `time<`, and `time-hash`.
 If they are of different types, an error satisfying
-time-object-error?` is signaled.
+`time-object-error?` is signaled.
 
 ## Time exceptions
 
@@ -235,6 +252,7 @@ time-object-error?` is signaled.
 
 Returns `#t` if *obj* is raised in any of the
 circumstances mentioned above or possibly in
+ipmlementation-defined circumstances.
 
 ## Implementation
 
@@ -254,8 +272,9 @@ This has the following desirable effects: the TAI-UTC offset is 0 in 1958
 (which is within a few milliseconds of the true value),
 and it is 10 at the start of 1972 when UTC and its leap second regime
 begin.  Not having a leap second at the end of 1969 ensures that there is none
-just before the Posix epoch.  The implementation also pretends,
-*faute de mieux*, that there will be no more leap seconds in the future.
+just before the Posix epoch.  The implementation also assumes
+(as is quite likely) that there will be no more leap seconds
+before the end of leap seconds in 2035.
 
 To update the leap second tables, download
 [`leap-seconds.list`](https://www.ietf.org/timezones/data/leap-seconds.list)
